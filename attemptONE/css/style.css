@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+
+
+.game {
+  text-align: center;
+  justify-content: center;
+  margin: 100px auto;
+  border: 1px solid black;
+  height: 600px;
+  width: 800px;
+  padding: 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.grid {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gridSquare {
+  border: 1px solid black;
+  width: 25px;
+  height: 25px;
+}
+
+.gridSquare.dog {
+  width: 25px;
+  height: 25px;
+  height: auto;
+  background-color: green;
+}
+
+.gridSquare.bone {
+  width: 25px;
+  height: 25px;
+  height: auto;
+  background-color: red;
+}
