@@ -31,16 +31,28 @@ body {
   height: 25px;
 }
 
-.gridSquare.dog {
-  width: 25px;
-  height: 25px;
-  height: auto;
+.pacman {
   background-color: green;
 }
 
-.gridSquare.bone {
-  width: 25px;
-  height: 25px;
-  height: auto;
+.food {
+  background-color: yellow;
+  border-radius: 10px;
+}
+
+.wall {
+  background-color: grey;
+}
+
+.ghostOne {
   background-color: red;
+}
+.ghostTwo {
+  background-color: purple;
+}
+.ghostThree {
+  background-color: brown;
+}
+.ghostFour {
+  background-color: black;
 }
