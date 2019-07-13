@@ -25,10 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gridSquare[pacIndex].classList.remove('pacman')
 
-
-    console.log('move this thing')
-
-
     switch(e.keyCode) {
       case 37: // left arrow
         if (gridSquare[pacIndex-1].classList.contains('wall')) pacIndex += 0
@@ -82,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     1, 2, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2, 1,
     1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1,
     1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
     1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
     1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1,
     1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1,
@@ -103,55 +99,77 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   assignGrid()
 
-
-
-  // -----------------Ghosts BABY----------------
-
   let ghostOneIndex = 170
   gridSquare[ghostOneIndex].classList.add('ghostOne')
-
   // I want to check which direction I can move in
   const directions = [-1, -width, 1, width]
   // directions --- left, up, right, down
-  let checkedDirections = []
-  let currentDirection
+  let goodDirections = []
+  const directionStore = []
+  // let directionMove
+  let directionMove = -1
+  let lastDirection = 0
+  // start---------------------------------------------------
+  function chooseAndMove() {
 
-
-  function checkDirection() {
-
-
-    checkedDirections = []
+    //  EVALUATES ALL THE CHOICES DONT CHOOSE WALL OR BACK ON ITS SELF
+    goodDirections = []
     for(let i = 0; i <directions.length; i++) {
       if (gridSquare[ghostOneIndex + directions[i]].classList.contains('wall')) {
-        checkedDirections.push(null)
+        goodDirections.push(null)
+      } else if (directions[i] === -lastDirection) {
+        goodDirections.push(null)
       } else {
-        checkedDirections.push(directions[i])
+        goodDirections.push(directions[i])
+      }
+    }
+    goodDirections = goodDirections.filter(x => x !== null)
+    console.log(goodDirections)
+
+    // CHOOSING FROM POSSIBLE DIRECTIONS
+    // random
+    // directionMove = goodDirections[Math.floor(Math.random()*goodDirections.length)]
+
+    //towards PacMan
+    if (pacIndex < ghostOneIndex) {
+      for(let j = 0; j < goodDirections.length; j++) {
+        if (goodDirections[j] < directionMove) {
+          directionMove = goodDirections[j]
+        } else {
+          directionMove = goodDirections[Math.floor(Math.random()*goodDirections.length)]
+        }
+      }
+    } else if (pacIndex > ghostOneIndex) {
+      for(let k = 0; k < goodDirections.length; k++) {
+        if (goodDirections[k] > directionMove) {
+          directionMove = goodDirections[k]
+        } else {
+          directionMove = goodDirections[Math.floor(Math.random()*goodDirections.length)]
+        }
       }
     }
 
-    console.log(checkedDirections)
-    checkedDirections = checkedDirections.filter(x => x !== null)
-    console.log(checkedDirections)
-  }
-  setInterval(checkDirection, 1000)
-
-
-
-  function moveGhost() {
-    gridSquare[ghostOneIndex].classList.remove('ghostOne')
-
-    // if (checkedDirections > 2) {
-    const rand = checkedDirections[Math.floor(Math.random()*checkedDirections.length)]
-    ghostOneIndex = ghostOneIndex + rand
-    // currentDirection = rand
-    // } else {
-    // ghostOneIndex = ghostOneIndex + currentDirection
+    // for(let j = 0; j < goodDirections.length; j++) {
+    //   if (pacIndex < ghostOneIndex && directionMove > goodDirections[j]) {
+    //     directionMove = goodDirections[j]
+    //   } else if (pacIndex > ghostOneIndex && directionMove < goodDirections[j]) {
+    //     directionMove = goodDirections[j]
+    //   } else {
+    //     directionMove = goodDirections[Math.floor(Math.random()*goodDirections.length)]
+    //   } // Issue if pac man is inline to the right and down is an apotion the ghost will choose down as it is a higher number
     // }
+    //STORES ALL PREVIOUS MOVES
+    directionStore.push(directionMove)
+
+    //STORES LAST DIRECTION TO NOT GO BACK ONITSELF
+    lastDirection = directionStore[directionStore.length-1]
+
+    // MOVES THE CLASS TO NEXT CHOSEN SQUARE
+    gridSquare[ghostOneIndex].classList.remove('ghostOne')
+    ghostOneIndex = ghostOneIndex + directionMove
     gridSquare[ghostOneIndex].classList.add('ghostOne')
-
-
   }
-  setInterval(moveGhost, 1000)
+  setInterval(chooseAndMove, 250)
 
 
 
