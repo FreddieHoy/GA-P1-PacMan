@@ -22,7 +22,7 @@
 // fruit points
 const width = 20
 const directions = [-1, -width, 1, width]
-let pacIndex = 21
+let pacIndex = 250
 // Possible moves for ghost
 let scoreNumber = 0
 // The timer played
@@ -32,6 +32,68 @@ let time = 0
 const ghostOne = {
   ghostIndex: 170,
   // Ghost moving directions. directions --- left, up, right, down
+  ghostClass: 'ghostOne',
+
+  goodDirections: [],
+  // Possible Index Positions for ghost
+  goodPositions: [],
+  //storing ghost past moves
+  directionStore: [],
+  // chosen direction to move ghost (inital start)
+  directionMove: -1,
+  // chosen Index position to move ghost
+  positionMove: null,
+  // the last direction used by ghost one.
+  lastDirection: 0,
+  // The score
+  // Bias determins the way the ghosts run 1 towards, 2 awayfrom.
+  bias: 1
+}
+const ghostTwo = {
+  ghostIndex: 169,
+  // Ghost moving directions. directions --- left, up, right, down
+  ghostClass: 'ghostTwo',
+
+  goodDirections: [],
+  // Possible Index Positions for ghost
+  goodPositions: [],
+  //storing ghost past moves
+  directionStore: [],
+  // chosen direction to move ghost (inital start)
+  directionMove: -1,
+  // chosen Index position to move ghost
+  positionMove: null,
+  // the last direction used by ghost one.
+  lastDirection: 0,
+  // The score
+  // Bias determins the way the ghosts run 1 towards, 2 awayfrom.
+  bias: 1
+}
+const ghostThree = {
+  ghostIndex: 168,
+  // Ghost moving directions. directions --- left, up, right, down
+  ghostClass: 'ghostThree',
+
+  goodDirections: [],
+  // Possible Index Positions for ghost
+  goodPositions: [],
+  //storing ghost past moves
+  directionStore: [],
+  // chosen direction to move ghost (inital start)
+  directionMove: -1,
+  // chosen Index position to move ghost
+  positionMove: null,
+  // the last direction used by ghost one.
+  lastDirection: 0,
+  // The score
+  // Bias determins the way the ghosts run 1 towards, 2 awayfrom.
+  bias: 1
+}
+const ghostFour = {
+  ghostIndex: 171,
+  // Ghost moving directions. directions --- left, up, right, down
+  ghostClass: 'ghostFour',
+
   goodDirections: [],
   // Possible Index Positions for ghost
   goodPositions: [],
@@ -58,18 +120,18 @@ const ghostOne = {
 // WARP = 6
 
 const layout = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 3, 2, 2, 2, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 2, 2, 1,
+  1, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 2, 2, 1,
   1, 2, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1,
   1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1,
   1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 2, 1,
   1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
   1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1,
   1, 0, 6, 2, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 2, 6, 0, 1,
-  1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 4, 0, 1, 1, 1, 1, 2, 1, 1, 1,
+  1, 1, 1, 2, 1, 1, 1, 1, 8, 7, 4, 9, 1, 1, 1, 1, 2, 1, 1, 1,
   1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1,
   1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
   1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-  1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+  1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1,
   1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1,
   1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1,
   1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 2, 1,
@@ -104,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', movePacMan)
   document.addEventListener('keydown', preventDefultScroll)
 
-  function assignGrid(ghost) {
+  function assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour) {
     infoBox.innerHTML = 'Here we go!'
     for (let i = 0; i < layout.length; i++) {
       if (layout[i] === 1) {
@@ -113,17 +175,26 @@ document.addEventListener('DOMContentLoaded', () => {
         gridSquare[i].classList.add('food')
       } else if (layout[i] === 3) {
         gridSquare[i].classList.add('pacman')
-      } else if (layout[i] === 4) {
-        gridSquare[i].classList.add('ghostOne')
-        ghost.ghostIndex = i
       } else if (layout[i] === 5) {
         gridSquare[i].classList.add('pill')
       } else if (layout[i] === 6) {
         gridSquare[i].classList.add('warp')
+      } else if (layout[i] === 4) {
+        gridSquare[i].classList.add('ghostOne')
+        ghostOne.ghostIndex = i
+      } else if (layout[i] === 7) {
+        gridSquare[i].classList.add('ghostTwo')
+        ghostTwo.ghostIndex = i
+      } else if (layout[i] === 8) {
+        gridSquare[i].classList.add('ghostThree')
+        ghostThree.ghostIndex = i
+      } else if (layout[i] === 9) {
+        gridSquare[i].classList.add('ghostFour')
+        ghostFour.ghostIndex = i
       }
     }
   }
-  assignGrid(ghostOne)
+  assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour)
 
   //------------------ MOVING PacMan -----------------------------
   function movePacMan(e) {
@@ -162,7 +233,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // colliding with pill ------------------------------------------
     if(gridSquare[pacIndex].classList.contains('pill')) {
       gridSquare[pacIndex].classList.remove('pill')
-      pilltaken()
+      pilltaken(ghostOne)
+      pilltaken(ghostTwo)
+      pilltaken(ghostThree)
+      pilltaken(ghostFour)
 
     }
     if (pacIndex === 141) {
@@ -196,6 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ghost.goodDirections.push(null)
       } else if (gridSquare[ghost.ghostIndex + directions[i]].classList.contains('warp')) {
         ghost.goodDirections.push(null)
+      } else if (gridSquare[ghost.ghostIndex + directions[i]].classList.contains('ghostOne') && ghost.goodDirections.length > 2) {
+        ghost.goodDirections.push(null)
+      } else if (gridSquare[ghost.ghostIndex + directions[i]].classList.contains('ghostTwo') && ghost.goodDirections.length > 2) {
+        ghost.goodDirections.push(null)
+      } else if (gridSquare[ghost.ghostIndex + directions[i]].classList.contains('ghostOne') && ghost.goodDirections.length > 2) {
+        ghost.goodDirections.push(null)
+      } else if (gridSquare[ghost.ghostIndex + directions[i]].classList.contains('ghostTwo') && ghost.goodDirections.length > 2) {
+        ghost.goodDirections.push(null)
       } else if (directions[i] === -ghost.lastDirection) {
         ghost.goodDirections.push(null)
       } else {
@@ -206,33 +288,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // THIS LOOKS AT ALL THE POSSIBLE DIRECTIONS TO MAKE AND CHOOSES THE BEST ONE
     //towards PacMan
 
-    pacManBias(ghost.goodDirections, ghost)
-    makeTheMove(ghost.positionMove, ghost)
+    pacManBias(ghost)
+    makeTheMove(ghost)
 
   }
-  let ghostMoveId = setInterval(function(){
+  let ghostMoveIdOne = setInterval(function(){
     chooseAndMove(ghostOne)
-  }, 150)
+  }, 300)
+  let ghostMoveIdTwo = setInterval(function(){
+    chooseAndMove(ghostTwo)
+  }, 300)
+  let ghostMoveIdThree = setInterval(function(){
+    chooseAndMove(ghostThree)
+  }, 300)
+  let ghostMoveIdFour = setInterval(function(){
+    chooseAndMove(ghostFour)
+  }, 300)
 
-  function makeTheMove(positionMove, ghost) {
+  function makeTheMove(ghost) {
     //this find the change of index so that it is not repeated
-    ghost.directionMove = positionMove - ghost.ghostIndex
+    ghost.directionMove = ghost.positionMove - ghost.ghostIndex
     //STORES ALL PREVIOUS MOVES
     ghost.directionStore.push(ghost.directionMove)
     //STORES LAST DIRECTION TO NOT GO BACK ONITSELF
     ghost.lastDirection = ghost.directionStore[ghost.directionStore.length-1]
     // MOVES THE CLASS TO NEXT CHOSEN SQUARE
-    gridSquare[ghost.ghostIndex].classList.remove('ghostOne')
+    gridSquare[ghost.ghostIndex].classList.remove(ghost.ghostClass)
     ghost.ghostIndex = ghost.ghostIndex + ghost.directionMove
-    gridSquare[ghost.ghostIndex].classList.add('ghostOne')
+    gridSquare[ghost.ghostIndex].classList.add(ghost.ghostClass)
     // if(gridSquare[ghostIndex].classList.contains('pacman')) {
   }
 
 
   // ------------------- pac move direction BIAS ----------------
-  function towardsPacMan(array, ghost) {
-    ghost.goodPositions = array.map(x => x + ghost.ghostIndex)
-
+  function towardsPacMan(ghost) {
+    ghost.goodPositions = ghost.goodDirections.map(x => x + ghost.ghostIndex)
     // the ghost takes an array of possible options to move and
     // then chooses the one that is closes to the value of PacMan
     const closestIndex = ghost.goodPositions.reduce(function(prev, curr) {
@@ -253,38 +343,36 @@ document.addEventListener('DOMContentLoaded', () => {
     ghost.positionMove = idealmoves[Math.floor(Math.random() * idealmoves.length)]
     return ghost.positionMove
   }
-  function awayFromPacMan(array, ghost) {
-    ghost.goodPositions = array.map(x => x + ghost.ghostIndex)
+  function awayFromPacMan(ghost) {
+    ghost.goodPositions = ghost.goodDirections.map(x => x + ghost.ghostIndex)
     ghost.positionMove = ghost.goodPositions.reduce(function(prev, curr) {
       return (Math.abs(curr - pacIndex) > Math.abs(prev - pacIndex) ? curr : prev)
     })
     return ghost.positionMove
   }
-  function outOfBox(array, ghost) {
-    ghost.goodPositions = array.map(x => x + ghost.ghostIndex)
+  function outOfBox(ghost) {
+    ghost.goodPositions = ghost.goodDirections.map(x => x + ghost.ghostIndex)
     ghost.positionMove = ghost.goodPositions.reduce(function(prev, curr) {
       return (Math.abs(curr - 111) < Math.abs(prev - 111) ? curr : prev)
     })
     return ghost.positionMove
   }
-  function sendHome(array, ghost) {
-    ghost.goodPositions = array.map(x => x + ghost.ghostIndex)
+  function sendHome(ghost) {
+    ghost.goodPositions = ghost.goodDirections.map(x => x + ghost.ghostIndex)
     ghost.positionMove = ghost.goodPositions.reduce(function(prev, curr) {
       return (Math.abs(curr - 170) < Math.abs(prev - 170) ? curr : prev)
     })
     return ghost.positionMove
   }
-
-
-  function pacManBias(array, ghost) {
+  function pacManBias(ghost) {
     if (ghost.ghostIndex === 168 || ghost.ghostIndex === 169 || ghost.ghostIndex === 170 || ghost.ghostIndex === 171 || ghost.ghostIndex === 148 || ghost.ghostIndex === 149 || ghost.ghostIndex === 150 || ghost.ghostIndex === 151 || ghost.ghostIndex === 129 || ghost.ghostIndex === 130) {
-      outOfBox(ghost.goodDirections)
+      outOfBox(ghost)
     } else if (ghost.bias === 1) {
-      towardsPacMan(array)
+      towardsPacMan(ghost)
     } else if (ghost.bias === 2) {
-      awayFromPacMan(array)
+      awayFromPacMan(ghost)
     } else if (ghost.bias === 3) {
-      sendHome()
+      sendHome(ghost)
     }
   }
 
@@ -295,50 +383,160 @@ document.addEventListener('DOMContentLoaded', () => {
       pacDied()
       infoBox.innerHTML = 'PacMan Died.'
       // The game currently resets its self 5 seconds after pacman dies
-      setTimeout(reset, 5000)
     }
-
   }
-  let caughtID = setInterval(pacCaught, 50)
+  let caughtIdOne = setInterval(function(){
+    pacCaught(ghostOne)
+  }, 60)
+  let caughtIdTwo = setInterval(function(){
+    pacCaught(ghostTwo)
+  }, 60)
+  let caughtIdThree = setInterval(function(){
+    pacCaught(ghostThree)
+  }, 60)
+  let caughtIdFour = setInterval(function(){
+    pacCaught(ghostFour)
+  }, 60)
+
+
 
   function pacDied() {
-    clearInterval(caughtID)
-    clearInterval(ghostMoveId)
+    clearInterval(caughtIdOne)
+    clearInterval(caughtIdTwo)
+    clearInterval(caughtIdThree)
+    clearInterval(caughtIdFour)
+    clearInterval(ghostMoveIdOne)
+    clearInterval(ghostMoveIdTwo)
+    clearInterval(ghostMoveIdThree)
+    clearInterval(ghostMoveIdFour)
     pacIndex = null
     clearInterval(countUpid)
+    setTimeout(function(){
+
+      reset(ghostOne)
+      reset(ghostTwo)
+      reset(ghostThree)
+      reset(ghostFour)
+      //restart ghosts moving
+      ghostMoveIdOne = setInterval(function(){
+        chooseAndMove(ghostOne)
+      }, 300)
+      ghostMoveIdTwo = setInterval(function(){
+        chooseAndMove(ghostTwo)
+      }, 300)
+      ghostMoveIdThree = setInterval(function(){
+        chooseAndMove(ghostThree)
+      }, 300)
+      ghostMoveIdFour = setInterval(function(){
+        chooseAndMove(ghostFour)
+      }, 300)
+
+      caughtIdOne = setInterval(function(){
+        pacCaught(ghostOne)
+      }, 50)
+      caughtIdTwo = setInterval(function(){
+        pacCaught(ghostTwo)
+      }, 50)
+      caughtIdOne = setInterval(function(){
+        pacCaught(ghostThree)
+      }, 50)
+      caughtIdTwo = setInterval(function(){
+        pacCaught(ghostFour)
+      }, 50)
+
+      countUpid = setInterval(function(){
+        countUp(ghostOne)
+      }, 1000)
+      countUpid = setInterval(function(){
+        countUp(ghostTwo)
+      }, 1000)
+      countUpid = setInterval(function(){
+        countUp(ghostThree)
+      }, 1000)
+      countUpid = setInterval(function(){
+        countUp(ghostFour)
+      }, 1000)
+    }, 5000)
+
   }
 
   // ------------------------ Pac taking pill ---------------------
+  let pacKillId = null
 
   function pilltaken(ghost) {
-
-
     ghost.bias = 2
-    clearInterval(caughtID)
+    clearInterval(caughtIdOne)
+    clearInterval(caughtIdTwo)
+    clearInterval(caughtIdThree)
+    clearInterval(caughtIdFour)
     // this reverses the ghosts direction once Pman has taken the pills
     ghost.lastDirection = -ghost.lastDirection
-    gridSquare[ghost.ghostIndex].classList.remove('ghostOne')
+    gridSquare[ghost.ghostIndex].classList.remove(ghost.ghostClass)
     ghost.ghostIndex = ghost.ghostIndex - ghost.directionMove
-    gridSquare[ghost.ghostIndex].classList.add('ghostOne')
+    gridSquare[ghost.ghostIndex].classList.add(ghost.ghostClass)
+
+    pacKillId = setInterval(function(){
+      pacKill(ghostOne)
+    }, 50)
+    pacKillId = setInterval(function(){
+      pacKill(ghostTwo)
+    }, 50)
+    pacKillId = setInterval(function(){
+      pacKill(ghostThree)
+    }, 50)
+    pacKillId = setInterval(function(){
+      pacKill(ghostFour)
+    }, 50)
+    // const pacKillidTwo = setInterval(function(ghostTwo){
+    //   pacKill(ghostTwo)
+    // }, 50)
+
     // this sets a wareoff time for the ghosts
-    setTimeout(pillWareoff, 6000)
+    setTimeout(function(){
+      pillWareoff(ghostOne)
+    }, 16000)
+    setTimeout(function(){
+      pillWareoff(ghostTwo)
+    }, 16000)
+    setTimeout(function(){
+      pillWareoff(ghostThree)
+    }, 16000)
+    setTimeout(function(){
+      pillWareoff(ghostFour)
+    }, 16000)
   }
 
-  function pacKill(ghost) {
+  function pacKill(ghost){
     // so pacMan can kill ghost
     if(gridSquare[pacIndex] === gridSquare[ghost.ghostIndex]) {
+      console.log('can pac kill')
+      ghost.lastDirection = -ghost.lastDirection
+      gridSquare[ghost.ghostIndex].classList.remove(ghost.ghostClass)
+      ghost.ghostIndex = ghost.ghostIndex - ghost.directionMove
+      gridSquare[ghost.ghostIndex].classList.add(ghost.ghostClass)
+      ghost.style.color = 'white'
       ghost.bias = 3
     }
   }
-  const pacKillid = setInterval(pacKill, 50)
-
 
   function pillWareoff(ghost) {
     ghost.bias = 1
-    caughtID = setInterval(pacCaught, 50)
-    clearInterval(pacKillid)
-  }
+    caughtIdOne = setInterval(function(){
+      pacCaught(ghostOne)
+    }, 50)
+    caughtIdTwo = setInterval(function(){
+      pacCaught(ghostTwo)
+    }, 50)
+    caughtIdThree = setInterval(function(){
+      pacCaught(ghostThree)
+    }, 50)
+    caughtIdFour = setInterval(function(){
+      pacCaught(ghostFour)
+    }, 50)
 
+    clearInterval(pacKillId)
+    // clearInterval(pacKillIdTwo)
+  }
 
 
   function countUp() {
@@ -354,17 +552,20 @@ document.addEventListener('DOMContentLoaded', () => {
     ghost.goodDirections = []
     ghost.directionMove = -1
     ghost.lastDirection = 0
-    gridSquare[ghost.ghostIndex].classList.remove('ghostOne')
-    ghost.ghostIndex = 170
+    gridSquare[ghostOne.ghostIndex].classList.remove('ghostOne')
+    gridSquare[ghostTwo.ghostIndex].classList.remove('ghostTwo')
+    gridSquare[ghostThree.ghostIndex].classList.remove('ghostThree')
+    gridSquare[ghostFour.ghostIndex].classList.remove('ghostFour')
+    ghostOne.ghostIndex = 170
+    ghostTwo.ghostIndex = 169
+    ghostOne.ghostIndex = 168
+    ghostTwo.ghostIndex = 171
     scoreNumber = 0
     ghost.bias = 1
-    assignGrid()
-
-    //restart ghosts moving
-    ghostMoveId = setInterval(chooseAndMove, 350)
-    caughtID = setInterval(pacCaught, 50)
-    countUpid = setInterval(countUp, 1000)
+    time = 0
+    assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour)
   }
+
 
 
 

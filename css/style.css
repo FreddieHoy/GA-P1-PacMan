@@ -33,7 +33,6 @@ h1 {
 }
 
 .gridSquare {
-  border: 1px solid black;
   width: 25px;
   height: 25px;
 }
@@ -47,7 +46,6 @@ h1 {
 
 .food {
   background-color: yellow;
-  border-radius: 10px;
 }
 
 .wall {
