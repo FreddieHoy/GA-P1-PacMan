@@ -3,26 +3,61 @@
 }
 body {
   margin: 0;
+background-color: black;
 }
 
 h1 {
   text-align: center;
   margin-top: 50px;
+  color: white;
+  font-family: 'Press Start 2P', cursive;
 }
+
 .game {
   text-align: center;
   justify-content: center;
   margin: 10px auto 100px auto;
-  border: 1px solid black;
+  border: 2px solid white;
   height: 600px;
-  width: 800px;
+  width: 900px;
   padding: 40px;
   display: flex;
   justify-content: space-between;
+
+
+}
+.score {
+  color: white;
+  font-weight: bold;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  width: 30%
+}
+.info > p {
+  margin: 20px auto;
+  font-family: 'Press Start 2P', cursive;
+  height: 25%;
 }
 
-.info {
-  display:
+.infoBox {
+  color: yellow;
+  font-weight: bold;
+  font-size: 30px;
+  height: 50%;
+  font-family: 'Press Start 2P', cursive;
+}
+p {
+  color: white;
+  font-weight: bold;
+}
+timer {
+  color: white;
+  font-weight: bold;
 }
 
 .grid {
@@ -30,41 +65,51 @@ h1 {
   height: 500px;
   display: flex;
   flex-wrap: wrap;
+  background-color: black;
+  box-shadow: 0 0 0 2px White;
 }
 
 .gridSquare {
   width: 25px;
   height: 25px;
 }
-
+.food {
+  background-image: radial-gradient(white 15%, transparent 20%);
+}
 .warp {
-  background-color: #fafafa;
+  background-color: #00004d;
+  border: 1px solid black;
 }
 .pacman {
-  background-color: green;
+  background-color: Yellow;
+  border: 1px solid black;
 }
-
-.food {
-  background-color: yellow;
-}
-
 .wall {
-  background-color: grey;
+  background-color: #04a303;
+  border: 0.5px solid black;
 }
-
 .ghostOne {
   background-color: red;
+  border: 2px solid black;
 }
 .ghostTwo {
-  background-color: purple;
+  background-color: #00ffff;
+  border: 2px solid black;
 }
 .ghostThree {
-  background-color: brown;
+  background-color: #ffa31a;
+  border: 2px solid black;
 }
 .ghostFour {
-  background-color: black;
+  background-color: pink;
+  border: 2px solid black;
 }
-
+.ghostFlee{
+  background-color: white;
+}
+.ghostDead{
+  background-color: grey;
+}
 .pill {
-  background-color: orange;
+  background-image: radial-gradient(orange 30%, transparent 20%);
 }
