@@ -1,25 +1,4 @@
 
-// -------------------------- TO DO LIST ----------------
-// Vital --------------
-//
-// - Talk about catching pacman -- maybe limiting the speed of pac man changes method of getting caught.
-// - killing ghosts misses them sometimes..
-//
-// - 3 more ghosts - using constructors functions???
-//
-//  CSS -------
-// Make it look less shit
-// Trasitions
-// ghost change color when pill is taken
-// little icons for ghosts
-// slowpac man but using transistion
-// food and pills icon
-//
-//
-//
-// BONUS ---------------
-// warp whole drops you at other side of the map.
-// fruit points
 const width = 20
 const directions = [-1, -width, 1, width]
 let pacIndex = 250
@@ -27,7 +6,18 @@ let pacIndex = 250
 let scoreNumber = 0
 // The timer played
 let time = 0
-//
+let countUpid
+
+const pilltime = 6000
+const ghostTimePerMove = 300
+let ghostMoveIdOne
+let ghostMoveIdTwo
+let ghostMoveIdThree
+let ghostMoveIdFour
+let pacSoundId
+let highScoreNumber = 0
+let highScoreTime = 0
+
 //
 const ghostOne = {
   ghostIndex: 170,
@@ -126,10 +116,10 @@ const layout = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 2, 1,
   1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 2, 1,
   1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-  1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1,
-  1, 6, 6, 2, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 2, 6, 6, 1,
-  1, 1, 1, 2, 1, 0, 0, 1, 8, 7, 4, 9, 1, 0, 0, 1, 2, 1, 1, 1,
-  1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1,
+  1, 1, 1, 2, 1, 1, 2, 1, 1, 0, 0, 1, 1, 1, 2, 1, 2, 1, 1, 1,
+  1, 6, 6, 2, 1, 2, 2, 1, 0, 0, 0, 0, 1, 2, 2, 1, 2, 6, 6, 1,
+  1, 1, 1, 2, 1, 2, 2, 1, 8, 7, 4, 9, 1, 2, 2, 1, 2, 1, 1, 1,
+  1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1,
   1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
   1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
   1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1,
@@ -164,25 +154,66 @@ document.addEventListener('DOMContentLoaded', () => {
   const score = document.querySelector('.score')
   const timer = document.querySelector('.timer')
   const start = document.querySelector('.start')
+  const highScore = document.querySelector('.highScore')
+  const left = document.querySelector('.left')
+  const up = document.querySelector('.up')
+  const right = document.querySelector('.right')
+  const down = document.querySelector('.down')
 
-  document.addEventListener('keydown', movePacMan)
   document.addEventListener('keydown', preventDefultScroll)
   start.addEventListener('click', () => {
-    for(let i=0; i<ghosts.length; i++) {
-      startReset(ghosts[i])
+    if (start.innerHTML === 'Start') {
+      startGame()
+      document.addEventListener('keyup', movePacMan)
+      start.innerHTML = 'RUN!'
+      infoBox.innerHTML = 'nice m8'
+      start.style.backgroundColor = 'red'
+    } else if (start.innerHTML === 'Play Again?') {
+      countUpid = setInterval(function(){
+        countUp()
+      }, 1000)
+      for( let i=0; i<16; i++) {
+        clearInterval(caughtIdOne)
+        clearInterval(caughtIdTwo)
+        clearInterval(caughtIdThree)
+        clearInterval(caughtIdFour)
+      }
+      for(let i=0; i<ghosts.length; i++) {
+        for( let i=0; i<16; i++) {
+          clearInterval(caughtIdOne)
+          clearInterval(caughtIdTwo)
+          clearInterval(caughtIdThree)
+          clearInterval(caughtIdFour)
+        }
+        startReset(ghosts[i])
+        caughtIdOne = setInterval(function(){
+          pacCaught(ghostOne)
+        }, 60)
+        caughtIdTwo = setInterval(function(){
+          pacCaught(ghostTwo)
+        }, 60)
+        caughtIdThree = setInterval(function(){
+          pacCaught(ghostThree)
+        }, 60)
+        caughtIdFour = setInterval(function(){
+          pacCaught(ghostFour)
+        }, 60)
+        start.innerHTML = 'RUN!'
+        start.style.backgroundColor = 'red'
+      }
     }
   })
 
 
   function assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour) {
-    infoBox.innerHTML = 'Here we go!'
+    infoBox.innerHTML = 'Click ↑'
     for (let i = 0; i < layout.length; i++) {
       if (layout[i] === 1) {
         gridSquare[i].classList.add('wall')
       } else if (layout[i] === 2) {
         gridSquare[i].classList.add('food')
       } else if (layout[i] === 3) {
-        gridSquare[i].classList.add('pacman')
+        gridSquare[i].classList.add('pacmanRight')
       } else if (layout[i] === 5) {
         gridSquare[i].classList.add('pill')
       } else if (layout[i] === 6) {
@@ -204,8 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour)
 
-
-
   function checkWin() {
     // let foodAmount = (layout.filter(x => x === 2)).length
     let foodAmount = 0
@@ -214,42 +243,78 @@ document.addEventListener('DOMContentLoaded', () => {
         foodAmount = foodAmount + 1
       }
     }
-    console.log(foodAmount)
     if (foodAmount === 0) {
-      clearInterval(caughtIdOne)
-      clearInterval(caughtIdTwo)
-      clearInterval(caughtIdThree)
-      clearInterval(caughtIdFour)
+      clearInterval(pacSoundId)
+
+      for( let i=0; i<16; i++) {
+        clearInterval(caughtIdOne)
+        clearInterval(caughtIdTwo)
+        clearInterval(caughtIdThree)
+        clearInterval(caughtIdFour)
+      }
 
       clearInterval(ghostMoveIdOne)
       clearInterval(ghostMoveIdTwo)
       clearInterval(ghostMoveIdThree)
       clearInterval(ghostMoveIdFour)
       clearInterval(countUpid)
+
+      start.innerHTML = 'Play Again?'
       infoBox.innerHTML = 'YOU WIN!'
+      if (scoreNumber > highScoreNumber) {
+        highScoreNumber = scoreNumber
+        highScoreTime = time
+      }
+
+      highScore.innerHTML = `${highScoreNumber}ps in ${highScoreTime}s`
+      time = time + 0
     }
   }
   setInterval(checkWin, 200)
 
   //------------------ MOVING PacMan -----------------------------
+  // function deathSound() {
+  const death = new Audio('pacman_death.wav')
+
+  function pacSound(){
+    const move = new Audio('pacman_chomp.wav')
+    move.play()
+  }
+
   function movePacMan(e) {
-    gridSquare[pacIndex].classList.remove('pacman')
+    gridSquare[pacIndex].classList.remove('pacmanUp')
+    gridSquare[pacIndex].classList.remove('pacmanRight')
+    gridSquare[pacIndex].classList.remove('pacmanDown')
+    gridSquare[pacIndex].classList.remove('pacmanLeft')
     switch(e.keyCode) {
       case 37: // left arrow
+        left.classList.add('active')
+        setTimeout(() => left.classList.remove('active'), 100)
         if (gridSquare[pacIndex-1].classList.contains('wall')) pacIndex += 0
         else if(pacIndex % width !== 0) pacIndex -= 1
+        gridSquare[pacIndex].classList.add('pacmanLeft')
+
         break
       case 38: // upp arrow
+        up.classList.add('active')
+        setTimeout(() => up.classList.remove('active'), 100)
         if (gridSquare[pacIndex-width].classList.contains('wall')) pacIndex += 0
         else if(pacIndex - width >= 0) pacIndex -= width
+        gridSquare[pacIndex].classList.add('pacmanUp')
         break
       case 39: // right arrow
+        right.classList.add('active')
+        setTimeout(() => right.classList.remove('active'), 100)
         if (gridSquare[pacIndex + 1].classList.contains('wall')) pacIndex += 0
         else if(pacIndex % width < width - 1) pacIndex += 1
+        gridSquare[pacIndex].classList.add('pacmanRight')
         break
       case 40: //down arrow
+        down.classList.add('active')
+        setTimeout(() => down.classList.remove('active'), 100)
         if (gridSquare[pacIndex+width].classList.contains('wall')) pacIndex += 0
         else if(pacIndex + width < width * width) pacIndex += width
+        gridSquare[pacIndex].classList.add('pacmanDown')
         break
     }
     // colliding with food -----------------------
@@ -258,31 +323,51 @@ document.addEventListener('DOMContentLoaded', () => {
       scoreNumber = scoreNumber + 10
       score.innerHTML = scoreNumber
     }
-    // POSSIBLE TO KILL PACMAN - MAYBE WHEN I SLOW HIM
-    // if(gridSquare[pacIndex] === gridSquare[ghostIndex]) {
-    //   pacDied()
-    //   // The game currently resets itsself 5 seconds after pacman dies
-    //   setTimeout(reset, 5000)
-    // }
-    gridSquare[pacIndex].classList.add('pacman')
+
+    // gridSquare[pacIndex].classList.add('pacman')
+
     // colliding with pill ------------------------------------------
     if(gridSquare[pacIndex].classList.contains('pill')) {
       gridSquare[pacIndex].classList.remove('pill')
-
       for (let i = 0; i < ghosts.length; i++) {
         pilltaken(ghosts[i])
       }
-
+      setTimeout(function(){
+        for( let i=0; i<16; i++) {
+          clearInterval(caughtIdOne)
+          clearInterval(caughtIdTwo)
+          clearInterval(caughtIdThree)
+          clearInterval(caughtIdFour)
+        }
+        caughtIdOne = setInterval(function(){
+          pacCaught(ghostOne)
+        }, 60)
+        caughtIdTwo = setInterval(function(){
+          pacCaught(ghostTwo)
+        }, 60)
+        caughtIdThree = setInterval(function(){
+          pacCaught(ghostThree)
+        }, 60)
+        caughtIdFour = setInterval(function(){
+          pacCaught(ghostFour)
+        }, 60)
+      }, pilltime)
     }
     if (pacIndex === 141) {
-      gridSquare[pacIndex].classList.remove('pacman')
+      gridSquare[pacIndex].classList.remove('pacmanUp')
+      gridSquare[pacIndex].classList.remove('pacmanRight')
+      gridSquare[pacIndex].classList.remove('pacmanDown')
+      gridSquare[pacIndex].classList.remove('pacmanLeft')
       pacIndex = 157
-      gridSquare[pacIndex].classList.add('pacman')
+      gridSquare[pacIndex].classList.add('pacmanLeft')
     }
     if (pacIndex === 158) {
-      gridSquare[pacIndex].classList.remove('pacman')
+      gridSquare[pacIndex].classList.remove('pacmanUp')
+      gridSquare[pacIndex].classList.remove('pacmanRight')
+      gridSquare[pacIndex].classList.remove('pacmanDown')
+      gridSquare[pacIndex].classList.remove('pacmanLeft')
       pacIndex = 142
-      gridSquare[pacIndex].classList.add('pacman')
+      gridSquare[pacIndex].classList.add('pacmanRight')
     }
   }
   // Preventing arrow keys from scrolling ---------------------------
@@ -291,14 +376,11 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault()
     }
   }
-
   //-----------------END OF MOVING PACMAN -------------------------------
 
   // -------------------- GHOST LOGIC  -----------------------------------------------
-
   function chooseAndMove(ghost) {
     //  EVALUATES ALL THE CHOICES DONT CHOOSE WALL OR BACK ON ITS SELF
-
     ghost.goodDirections = []
     for(let i = 0; i < directions.length; i++) {
       if (gridSquare[ghost.ghostIndex + directions[i]].classList.contains('wall')) {
@@ -325,24 +407,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     ghost.goodDirections = ghost.goodDirections.filter(x => x !== null)
     // THIS LOOKS AT ALL THE POSSIBLE DIRECTIONS TO MAKE AND CHOOSES THE BEST ONE
-    //towards PacMan
-
     pacManBias(ghost)
     makeTheMove(ghost)
   }
 
-  let ghostMoveIdOne = setInterval(function(){
-    chooseAndMove(ghostOne)
-  }, 250)
-  let ghostMoveIdTwo = setInterval(function(){
-    chooseAndMove(ghostTwo)
-  }, 250)
-  let ghostMoveIdThree = setInterval(function(){
-    chooseAndMove(ghostThree)
-  }, 250)
-  let ghostMoveIdFour = setInterval(function(){
-    chooseAndMove(ghostFour)
-  }, 250)
+  function startGame() {
+    pacSoundId = setInterval(pacSound, 650)
+    countUpid = setInterval(countUp, 1000)
+    ghostMoveIdOne = setInterval(function(){
+      chooseAndMove(ghostOne)
+    }, ghostTimePerMove)
+    ghostMoveIdTwo = setInterval(function(){
+      chooseAndMove(ghostTwo)
+    }, ghostTimePerMove)
+    ghostMoveIdThree = setInterval(function(){
+      chooseAndMove(ghostThree)
+    }, ghostTimePerMove)
+    ghostMoveIdFour = setInterval(function(){
+      chooseAndMove(ghostFour)
+    }, ghostTimePerMove)
+  }
 
   function makeTheMove(ghost) {
     //this find the change of index so that it is not repeated
@@ -427,15 +511,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ----------------- Pac getting killed ------------------
-
   function pacCaught(ghost) {
+    console.log('is it catching?')
     if(gridSquare[pacIndex] === gridSquare[ghost.ghostIndex]) {
-      gridSquare[pacIndex].classList.remove('pacman')
+      gridSquare[pacIndex].classList.remove('pacmanRight')
+      gridSquare[pacIndex].classList.remove('pacmanLeft')
+      gridSquare[pacIndex].classList.remove('pacmanUp')
+      gridSquare[pacIndex].classList.remove('pacmanDown')
       pacDied(ghost)
+      death.play()
+      clearInterval(pacSoundId)
       clearInterval(countUpid)
+      for( let i=0; i<16; i++) {
+        clearInterval(caughtIdOne)
+        clearInterval(caughtIdTwo)
+        clearInterval(caughtIdThree)
+        clearInterval(caughtIdFour)
+      }
+      if (scoreNumber > highScoreNumber) {
+        highScoreNumber = scoreNumber
+        highScoreTime = time
+      }
+      highScore.innerHTML = `${highScoreNumber}ps in ${highScoreTime}s`
       time = time + 0
+      start.innerHTML = 'Play Again?'
       infoBox.innerHTML = 'PacMan Died.'
-      // The game currently resets its self 5 seconds after pacman dies
+      start.style.backgroundColor = 'red'
     }
   }
 
@@ -452,13 +553,13 @@ document.addEventListener('DOMContentLoaded', () => {
     pacCaught(ghostFour)
   }, 60)
 
-
-
   function pacDied() {
-    clearInterval(caughtIdOne)
-    clearInterval(caughtIdTwo)
-    clearInterval(caughtIdThree)
-    clearInterval(caughtIdFour)
+    for( let i=0; i<16; i++) {
+      clearInterval(caughtIdOne)
+      clearInterval(caughtIdTwo)
+      clearInterval(caughtIdThree)
+      clearInterval(caughtIdFour)
+    }
 
     clearInterval(ghostMoveIdOne)
     clearInterval(ghostMoveIdTwo)
@@ -468,10 +569,16 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(countUpid)
   }
 
-
-
   function startReset(ghost) {
+    for( let i=0; i<16; i++) {
+      clearInterval(caughtIdOne)
+      clearInterval(caughtIdTwo)
+      clearInterval(caughtIdThree)
+      clearInterval(caughtIdFour)
+    }
     reset(ghost)
+    clearInterval(pacSoundId)
+    pacSoundId = setInterval(pacSound, 650)
     //restart ghosts moving
     clearInterval(ghostMoveIdOne)
     clearInterval(ghostMoveIdTwo)
@@ -479,58 +586,41 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(ghostMoveIdFour)
     ghostMoveIdOne = setInterval(function(){
       chooseAndMove(ghostOne)
-    }, 250)
+    }, ghostTimePerMove)
     ghostMoveIdTwo = setInterval(function(){
       chooseAndMove(ghostTwo)
-    }, 250)
+    }, ghostTimePerMove)
     ghostMoveIdThree = setInterval(function(){
       chooseAndMove(ghostThree)
-    }, 250)
+    }, ghostTimePerMove)
     ghostMoveIdFour = setInterval(function(){
       chooseAndMove(ghostFour)
-    }, 250)
+    }, ghostTimePerMove)
 
-    caughtIdOne = setInterval(function(){
-      pacCaught(ghostOne)
-    }, 60)
-    caughtIdTwo = setInterval(function(){
-      pacCaught(ghostTwo)
-    }, 60)
-    caughtIdOne = setInterval(function(){
-      pacCaught(ghostThree)
-    }, 60)
-    caughtIdTwo = setInterval(function(){
-      pacCaught(ghostFour)
-    }, 60)
-
-    countUpid = setInterval(function(){
-      countUp()
-    }, 1000)
   }
 
-
-
-
   // ------------------------ Pac taking pill ---------------------
-
 
   function pilltaken(ghost) {
     ghost.bias = 2
     gridSquare[ghost.ghostIndex].classList.remove('ghostDead')
     gridSquare[ghost.ghostIndex].classList.remove(ghost.ghostClass)
     gridSquare[ghost.ghostIndex].classList.add('ghostFlee')
-    clearInterval(caughtIdOne)
-    clearInterval(caughtIdTwo)
-    clearInterval(caughtIdThree)
-    clearInterval(caughtIdFour)
+    for( let i=0; i<16; i++) {
+      clearInterval(caughtIdOne)
+      clearInterval(caughtIdTwo)
+      clearInterval(caughtIdThree)
+      clearInterval(caughtIdFour)
+    }
     // this reverses the ghosts direction once Pman has taken the pills
     ghost.lastDirection = -ghost.lastDirection
     gridSquare[ghost.ghostIndex].classList.remove('ghostFlee')
     ghost.ghostIndex = ghost.ghostIndex - ghost.directionMove
     gridSquare[ghost.ghostIndex].classList.add('ghostFlee')
 
+
     const pacKillIdOne = setInterval(function(){
-      pacKill(ghost)
+      pacKill(ghostOne)
     }, 60)
     const pacKillIdTwo = setInterval(function(){
       pacKill(ghostTwo)
@@ -543,44 +633,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 60)
 
     // this sets a wareoff time for the ghosts
-
     setTimeout(function(){
+      for( let i=0; i<4; i++) {
+        clearInterval(pacKillIdOne)
+        clearInterval(pacKillIdTwo)
+        clearInterval(pacKillIdThree)
+        clearInterval(pacKillIdFour)
+      }
       pillWareoff(ghost)
-
-      clearInterval(pacKillIdOne)
-      clearInterval(pacKillIdTwo)
-      clearInterval(pacKillIdThree)
-      clearInterval(pacKillIdFour)
-
-      clearInterval(pacKillIdOne)
-      clearInterval(pacKillIdTwo)
-      clearInterval(pacKillIdThree)
-      clearInterval(pacKillIdFour)
-
-      clearInterval(pacKillIdOne)
-      clearInterval(pacKillIdTwo)
-      clearInterval(pacKillIdThree)
-      clearInterval(pacKillIdFour)
-
-      clearInterval(pacKillIdOne)
-      clearInterval(pacKillIdTwo)
-      clearInterval(pacKillIdThree)
-      clearInterval(pacKillIdFour)
-
-    }, 5000)
-
+    }, pilltime)
   }
 
   function pacKill(ghost){
+    console.log('can pac kill')
+    for( let i=0; i<16; i++) {
+      clearInterval(caughtIdOne)
+      clearInterval(caughtIdTwo)
+      clearInterval(caughtIdThree)
+      clearInterval(caughtIdFour)
+    }
     // so pacMan can kill ghost
     if(gridSquare[pacIndex] === gridSquare[ghost.ghostIndex]) {
       scoreNumber = scoreNumber + 200
-      infoBox.innerHTML = 'You Killed a ghost! \n 200 Points!'
+      infoBox.innerHTML = 'Ghost \n +200 Points'
       gridSquare[ghost.ghostIndex].classList.remove('ghostFlee')
       gridSquare[ghost.ghostIndex].classList.remove(ghost.ghostClass)
       gridSquare[ghost.ghostIndex].classList.remove('ghostDead')
 
-      console.log('can pac kill')
       ghost.lastDirection = -ghost.lastDirection
       gridSquare[ghost.ghostIndex].classList.remove('ghostDead')
       ghost.ghostIndex = ghost.ghostIndex - ghost.directionMove
@@ -595,30 +674,27 @@ document.addEventListener('DOMContentLoaded', () => {
     gridSquare[ghost.ghostIndex].classList.remove('ghostDead')
     gridSquare[ghost.ghostIndex].classList.remove('ghostFlee')
 
-    caughtIdOne = setInterval(function(){
-      pacCaught(ghost)
-    }, 60)
-    caughtIdTwo = setInterval(function(){
-      pacCaught(ghostTwo)
-    }, 60)
-    caughtIdThree = setInterval(function(){
-      pacCaught(ghostThree)
-    }, 60)
-    caughtIdFour = setInterval(function(){
-      pacCaught(ghostFour)
-    }, 60)
+    for( let i=0; i<16; i++) {
+      clearInterval(caughtIdOne)
+      clearInterval(caughtIdTwo)
+      clearInterval(caughtIdThree)
+      clearInterval(caughtIdFour)
+    }
 
   }
-
 
   function countUp() {
     time = time + 1
     timer.innerHTML = time
   }
-  let countUpid = setInterval(countUp, 1000)
-
 
   function reset(ghost) {
+    for( let i=0; i<16; i++) {
+      clearInterval(caughtIdOne)
+      clearInterval(caughtIdTwo)
+      clearInterval(caughtIdThree)
+      clearInterval(caughtIdFour)
+    }
     scoreNumber = 0
     time = 0
     score.innerHTML = scoreNumber
@@ -642,9 +718,5 @@ document.addEventListener('DOMContentLoaded', () => {
     ghost.bias = 1
     assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour)
   }
-
-
-
-
 
 })
