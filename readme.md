@@ -1,9 +1,9 @@
-#Project 1: PacMan
+# Project 1: PacMan
 
 The game:
 https://freddiehoy.github.io/PacMan/
 
-##Overview
+## Overview
 
 I have remade a browser based version of the old arcade game PacMan. Have a play try and eat all the food without being caught by the spooky ghosts. Set a high score and then challenge your friends to beat it!
 
@@ -12,7 +12,7 @@ This is my first ever coding project! Taking one week to build mainly using Java
 ![PacMan Screen Shot](https://user-images.githubusercontent.com/51379192/61525224-dcf84400-aa0f-11e9-87b7-6162992fc5f3.png)
 
 
-##Brief
+## Brief
 * Create a grid based game in the web browser.
 * The player should be able to clear at least one board.
 * The player's score should be displayed at the end of the game.
@@ -26,16 +26,16 @@ This is my first ever coding project! Taking one week to build mainly using Java
 * Use Javascript or jQuery for DOM manipulation.
 * Deploy your game online, using Github Pages, where the rest of the world can access it.
 
-##Technologies Used
+## Technologies Used
 * HTML5 with HTML5 audio
 * CSS3 with animation
 * JavaScript (ES6)
 
 
-##Approach taken
+## Approach taken
 This section lays out the general approach and key problems solved.
 
-###Grid layout
+### Grid layout
 The First step was to make a grid which would make the base of the game.
 This was done by deciding a width and using for loop to create 400 divs creating a 20x20 game board.
 
@@ -107,9 +107,9 @@ function assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour) {
 }
 ```
 
-###Moving PacMan
+### Moving PacMan
 
-####Event listeners
+#### Event listeners
 In order to move PacMan I simply added event listeners to the arrow keys. There defaults were also removed so that the up and down arrow keys did not scroll the page. These vent listeners then ran a function that physically move pac man.
 
 Each div was represented with an index number 0 to 400. PacMan was moved by removing the class of PacMan changing his position index number and then adding his class to the new position index number.
@@ -146,10 +146,10 @@ function movePacMan(e) {
 }
 ```
 
-###Ghosts Logic
+### Ghosts Logic
 Moving the Ghosts works in a similar way by removing and re-adding the class of the ghost, however instead of event listeners a set interval is used to move the ghost once every number of milliseconds.
 
-####Chasing PacMan
+#### Chasing PacMan
 The difficulty with the ghosts is that out of all the possible choices of the next move it can take it must chose one that take it on a route that chases PacMan.
 
 It therefore firsts evaluates all the possible moves, creating an array that does not include any directions that are into walls and importantly no directions that move the ghosts backwards.
@@ -192,7 +192,7 @@ function towardsPacMan(ghost) {
 }
 ```
 
-####Bias
+#### Bias
 Notably the ghosts are not always chasing PacMan. When a pill is take by PacMan the ghosts must run away. When a ghost is then killed it runs to the centre where they start.
 
 to control this a bias variable was created which changes depends on where the ghosts need to move. This then changes the function used deciding which path the ghosts takes.
@@ -211,7 +211,7 @@ function pacManBias(ghost) {
   }
 }
 ```
-###Audio
+### Audio
 Audio was added to enhance player experience. Note sounds were added for during game play and for when PacMan is caught.
 
 ### Searching functions.
@@ -223,7 +223,7 @@ There are 3 functions running once every 60ms in the background.
 
 All 3 of these must be cancelled when the game is one or if PacMan is caught and then restarted if the game is restarted.
 
-##Game Screen shots
+## Game Screen shots
 Some screen shots from the game.
 
 The start of the game.
@@ -235,18 +235,18 @@ PacMan has taken a pill and the ghosts are running away they turn white.
 The player has won the game and has set a high score.
 ![When the player wins the game and sets a highscore](https://user-images.githubusercontent.com/51379192/61529826-41200580-aa1a-11e9-8e70-b0a2fdb2b8e9.png)
 
-##Wins and Blockers
+## Wins and Blockers
 
 The biggest win was figuring out the complex ghost logic, which included figuring out the modulus logic for chasing PacMan. This really made the game much more realistic and enjoyable
 
 I also had deep issues with clearing the setIntervals. Because 4 setIntervals had to be made for each ghosts cancelling then combined with calling functions became complex and took a day or solve to fix the big bugs with that.
 
-###Future features
+### Future features
 One thing was making it possible to play on a touch mobile phone. Which can hopefully can be done quite easily as I have the arrow key button on the screen just need to add event listeners to move PacMan once they are pressed.
 
 I would also like to add different levels of difficulty. This will involve much greater time commitment and I might save this for after finishing my course at GA
 
-###What have I learned.
+### What have I learned.
 - Layout for JS web browser project.
 - A good approach to problem solving.
 - A greater understanding of the length of time it takes to to certain things.

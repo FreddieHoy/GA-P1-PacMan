@@ -122,14 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
   //accssing the grid
   const grid = document.querySelector('.grid')
   //creating all the small squares within the grid
-  function createGrid(x) {
-    for (let i = 0; i < x; i++) {
-      const div = document.createElement('div')
-      div.classList.add('gridSquare')
-      grid.appendChild(div)
-    }
+  for (let i = 0; i < layout.length; i++) {
+    const div = document.createElement('div')
+    div.classList.add('gridSquare')
+    grid.appendChild(div)
   }
-  createGrid(400)
   // Acessing the DOM
   const gridSquare = document.querySelectorAll('.gridSquare')
   const infoBox = document.querySelector('.infoBox')
@@ -154,9 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
       start.style.backgroundColor = 'red'
     // if it says play again? run the game 1st > time
     } else if (start.innerHTML === 'Play Again?') {
-      countUpid = setInterval(function(){
-        countUp()
-      }, 1000)
+      countUpid = setInterval(countUp, 1000)
       for( let i=0; i<16; i++) {
         clearInterval(caughtIdOne)
         clearInterval(caughtIdTwo)
@@ -188,10 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   })
+
+  // const layoutClasses = ['', 'wall', 'food', 'pacmanRight', 'pill', 'warp', 'ghostOne', 'ghostTwo', 'ghostThree', 'ghostFour']
   //This function assings the correct classes depending on the layout above.
   function assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour) {
     infoBox.innerHTML = 'Click ↑'
     for (let i = 0; i < layout.length; i++) {
+      // gridSquare[i].classList.add(layoutClasses[layout[i]])
       if (layout[i] === 1) {
         gridSquare[i].classList.add('wall')
       } else if (layout[i] === 2) {
@@ -351,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // Preventing arrow keys from scrolling
   function preventDefultScroll(e) {
-    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    if([32, 37, 38, 39, 40, 16].indexOf(e.keyCode) > -1) {
       e.preventDefault()
     }
   }
