@@ -143,7 +143,7 @@ function movePacMan(e) {
       gridSquare[pacIndex].classList.add('pacman')
       break
   }
-}
+} 
 ```
 
 ### Ghosts Logic
