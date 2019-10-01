@@ -1,7 +1,6 @@
 # Project 1: PacMan
 
-The game:
-https://freddiehoy.github.io/PacMan/
+The game: [PacMan](https://freddiehoy.github.io/GA-P1-PacMan/)
 
 ## Overview
 
@@ -31,11 +30,18 @@ This is my first ever coding project! Taking one week to build mainly using Java
 * CSS3 with animation
 * JavaScript (ES6)
 
+## Features & Pages
+
+- One page
+- High Score - Score & time
+- Restart Game
+- Timer
+- Score
 
 ## Approach taken
 This section lays out the general approach and key problems solved.
 
-### Grid layout
+#### Grid layout
 The First step was to make a grid which would make the base of the game.
 This was done by deciding a width and using for loop to create 400 divs creating a 20x20 game board.
 
@@ -107,9 +113,8 @@ function assignGrid(ghostOne, ghostTwo, ghostThree, ghostFour) {
 }
 ```
 
-### Moving PacMan
+#### Moving PacMan
 
-#### Event listeners
 In order to move PacMan I simply added event listeners to the arrow keys. There defaults were also removed so that the up and down arrow keys did not scroll the page. These vent listeners then ran a function that physically move pac man.
 
 Each div was represented with an index number 0 to 400. PacMan was moved by removing the class of PacMan changing his position index number and then adding his class to the new position index number.
@@ -143,10 +148,10 @@ function movePacMan(e) {
       gridSquare[pacIndex].classList.add('pacman')
       break
   }
-} 
+}
 ```
 
-### Ghosts Logic
+#### Ghosts Logic
 Moving the Ghosts works in a similar way by removing and re-adding the class of the ghost, however instead of event listeners a set interval is used to move the ghost once every number of milliseconds.
 
 #### Chasing PacMan
@@ -241,15 +246,42 @@ The biggest win was figuring out the complex ghost logic, which included figurin
 
 I also had deep issues with clearing the setIntervals. Because 4 setIntervals had to be made for each ghosts cancelling then combined with calling functions became complex and took a day or solve to fix the big bugs with that.
 
-### Future features
-One thing was making it possible to play on a touch mobile phone. Which can hopefully can be done quite easily as I have the arrow key button on the screen just need to add event listeners to move PacMan once they are pressed.
+| Time      | Task         |
+| ------------- |:-------------:|
+| **Day One**    | Choose Project game, play game, read about the rules, create grid.   |
+|  **Day two**    | Get basic Pac moving around grid. Prevent him from walking into block. Read up about ghost logic. Get 1 ghost moving with very basic logic.      |
+| **Day Three**  |    Get more advanced ghost movement, including path decision and not going back on its self. Pill to add move bias and Kill ghost.   |
+| **Day Four**  |  Add 3 More Ghosts. Refactoring.  |
+| **Day Five**  |  Continue adding 3 More Ghosts. Level Restart. Bugs with pills and timing issues.    |
+| **Day Six**  |   Sound, Styling, Buttons, Score, Timer Bugs    |
+| **Day Seven**  |  Deployment, ReadMe, prep for presentation     |
 
-I would also like to add different levels of difficulty. This will involve much greater time commitment and I might save this for after finishing my course at GA
+## THE BIG WINS.
 
-### What have I learned.
+1. I am really happy with the Ghost logic, I really like the solution I came up with. It sets the difficulty to a really good level
+2. Timing was a very difficult so very happy it worked. Definitely could be improved very overkill with clearInterval. But still happy :D
+
+## What have I learned.
 - Layout for JS web browser project.
 - A good approach to problem solving.
 - A greater understanding of the length of time it takes to to certain things.
 - That I am capable of completing some complex features that previously I did not think I was capable of.
 - A host of key and other shortcuts that make me a more efficient coder.
+
+## Moving Forward
+
+- Responsive and touch screen play using arrow keys on screen.
+- Using Object Orientated Programming. My code is very 'soupy' and can be simplified.
+- Ghost logic improved using path finder & different ghost personalities.
+- Cached local score Leader Board!
+- Possibly level 2, 3, 4 etc..
+
 ---
+# Contact
+
+Freddie Hoy
+
+Email: freddiehoy0@gmail.com
+
+[Portfolio](https://freddiehoy.github.io/) | [LinkedIn](https://www.linkedin.com/in/freddie-hoy/) |
+[GitHub](https://github.com/FreddieHoy?tab=repositories)
